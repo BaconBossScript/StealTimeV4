@@ -1,0 +1,158 @@
+if game.PlaceId == 13503127346 then
+ 
+    local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+    local Window = OrionLib:MakeWindow({Name = "BaconBoss Hub | Steal Time v4 ✨[ALPHA]", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+    local TpTab = Window:MakeTab({
+        Name = "Main",
+        Icon = "rbxassetid://4483345998",
+        PremiumOnly = false
+    })
+
+    
+    local Tp4Tab = Window:MakeTab({
+        Name = "Others",
+        Icon = "rbxassetid://4483345998",
+        PremiumOnly = false
+    })
+
+    _G.open = true
+
+    function open()
+         while _G.open == true do
+            local args = {
+                [1] = "Corrupt",
+                [2] = game:GetService("Players").LocalPlayer
+            }
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CaseInfo"):InvokeServer(unpack(args))
+            wait(0.5)
+        end
+    end
+    
+    TpTab:AddToggle({
+        Name = "Auto Open Corrupt Case",
+        Default = false,
+        Callback = function(Value)
+            _G.open = Value
+            open()
+        end    
+    })
+
+    TpTab:AddButton({
+        Name = "Kill Aura",
+        Callback = function()
+            local range = 35
+ 
+            --// Variable \\--
+            local player = game:GetService("Players").LocalPlayer
+             
+            --// Script \\--
+            game:GetService("RunService").RenderStepped:Connect(function()
+                local p = game.Players:GetPlayers()
+                for i = 2, #p do local v = p[i].Character
+                    if v and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") and player:DistanceFromCharacter(v.HumanoidRootPart.Position) <= range then
+                        local tool = player.Character and player.Character:FindFirstChildOfClass("Tool")
+                        if tool and tool:FindFirstChild("Handle") then
+                            tool:Activate()
+                            for i,v in next, v:GetChildren() do
+                                if v:IsA("BasePart") then
+                                    firetouchinterest(tool.Handle,v,0)
+                                    firetouchinterest(tool.Handle,v,1)
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    }) 
+
+
+    Tp4Tab:AddButton({
+        Name = "Anti AFK",
+        Callback = function()
+            local vu = game:GetService("VirtualUser")
+            game:GetService("Players").LocalPlayer.Idled:connect(function()
+                vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+                wait(1)
+                vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            end)
+        end
+    })
+    
+    Tp4Tab:AddButton({
+        Name = "Delete Time Hold Button E",
+        Callback = function()
+            while true do
+                for _, v in next, workspace:GetDescendants() do
+                    if v:IsA("ProximityPrompt") then
+                        v.HoldDuration = 0
+                    end
+                end
+                wait(1) 
+            end
+        end
+    })
+    
+    Tp4Tab:AddButton({
+        Name = "Server Less People",
+        Callback = function()
+            local Http = game:GetService("HttpService")
+            local TPS = game:GetService("TeleportService")
+            local Api = "https://games.roblox.com/v1/games/"
+    
+            local _place = game.PlaceId
+            local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+    
+            local function ListServers(cursor)
+                local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+                return Http:JSONDecode(Raw)
+            end
+    
+            local Server, Next
+            repeat
+                local Servers = ListServers(Next)
+                Server = Servers.data[1]
+                Next = Servers.nextPageCursor
+            until Server
+    
+            TPS:TeleportToPlaceInstance(_place, Server.id, game.Players.LocalPlayer)
+        end
+    })
+    
+    Tp4Tab:AddButton({
+        Name = "Server Hop",
+        Callback = function()
+            local module = loadstring(game:HttpGet("https://raw.githubusercontent.com/LeoKholYt/roblox/main/lk_serverhop.lua"))()
+            module:Teleport(game.PlaceId)
+        end
+    })
+    
+    Tp4Tab:AddSlider({
+        Name = "Change Speed Power",
+        Min = 16,
+        Max = 1000,
+        Default = 5,
+        Color = Color3.fromRGB(255,255,255),
+        Increment = 1,
+        ValueName = "Speed",
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        end    
+    })
+    
+    Tp4Tab:AddSlider({
+        Name = "Change Jump Power",
+        Min = 16,
+        Max = 1000,
+        Default = 5,
+        Color = Color3.fromRGB(255,255,255),
+        Increment = 1,
+        ValueName = "Jump",
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+        end    
+    })
+
+end
